@@ -1,0 +1,10 @@
+- name: copy cert to remote
+  copy:
+    src: '{{ ssl_dir }}/elastic-certificates.p12'
+    dest: /etc/elasticsearch/
+    owner: root
+    group: elasticsearch
+    mode: 0755
+  notify: restart elasticsearch
+  tags: copy_cert_remote
+

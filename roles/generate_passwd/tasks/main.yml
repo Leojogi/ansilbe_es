@@ -1,0 +1,10 @@
+- name: set passwd for account
+  script: /root/ansible/roles/install_es_cluster/files/give_passwd.exp
+  register: returnmsg
+  tags: set_passwd
+
+- name: set max shards
+  script: /root/ansible/roles/install_es_cluster/files/set_shards.sh
+  when: returnmsg.rc == 0
+  tags: set_shards 
+

@@ -1,0 +1,27 @@
+---
+
+- name: "初始化"
+  hosts: es-cluster
+  roles:
+    - { role: 'init' }
+
+- name: "安装elasticsearch"
+  hosts: es-cluster
+  roles:
+    - { role: 'install_es_cluster' }
+
+- name: "签发证书"
+  hosts: es-cluster
+  roles:
+    - { role: 'cert', when: role == "master"}
+
+- name: "copy证书"
+  hosts: es-cluster
+  roles:
+    - { role: 'copy_cert', when: role == "node"}
+
+- name: "生成密码"
+  hosts: es-cluster
+  roles:
+    - { role: 'generate_passwd', when: role == "master"}
+

@@ -1,0 +1,32 @@
+#!/usr/bin/expect
+set timeout 3
+spawn /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
+
+expect "\[y/N\]"
+send "y\r"
+expect "Enter password for \[elastic\]"
+send "hillstone\r"
+expect "Reenter password for \[elastic\]"
+send "hillstone\r"
+expect "Enter password for \[apm_system\]"
+send "hillstone\r"
+expect "Reenter password for \[apm_system\]"
+send "hillstone\r"
+expect "Enter password for \[kibana\]"
+send "hillstone\r"
+expect "Reenter password for \[kibana\]"
+send "hillstone\r"
+expect "Enter password for \[logstash_system\]"
+send "hillstone\r"
+expect "Reenter password for \[logstash_system\]"
+send "hillstone\r"
+expect "Enter password for \[beats_system\]"
+send "hillstone\r"
+expect "Reenter password for \[beats_system\]"
+send "hillstone\r"
+expect "Enter password for \[remote_monitoring_user\]"
+send "hillstone\r"
+expect "Reenter password for \[remote_monitoring_user\]"
+send "hillstone\r"
+
+expect eof

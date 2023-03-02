@@ -1,0 +1,15 @@
+- name: generation cert file
+  shell: "/usr/share/elasticsearch/bin/elasticsearch-certutil cert -out /etc/elasticsearch/elastic-certificates.p12 -pass ''"
+  tags: cert
+
+- name: give permission
+  shell: "chmod g+rw /etc/elasticsearch/elastic-certificates.p12"
+  notify: restart elasticsearch
+
+- name: copy cert to local
+  fetch:
+    dest: /root/ansible/roles/install_es_cluster/files/
+    src: /etc/elasticsearch/elastic-certificates.p12
+    flat: yes
+  tags: copy_cert_local
+

@@ -1,0 +1,6 @@
+es-node1  ansible_ssh_host=10.182.220.141  ansible_ssh_port=22 ansible_ssh_pass=hillstone hostname=es-node1 role=master 
+es-node2  ansible_ssh_host=10.182.220.142  ansible_ssh_port=22 ansible_ssh_pass=hillstone hostname=es-node2 role=node
+
+[es-cluster]
+es-node1
+es-node2

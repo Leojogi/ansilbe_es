@@ -1,0 +1,83 @@
+- name: fail when hostname is not specified
+  fail:
+    msg: "hostname not specified"
+  when:
+    - hostname is not defined
+
+- name: set host name
+  hostname:
+    name: "{{ hostname }}"
+  tags: hostname
+
+- name: add hostname to hosts
+  blockinfile:
+    path: /etc/hosts
+    block: |- 
+      {% for item in play_hosts %}
+      {{ hostvars[item]['ansible_ssh_host'] }}  {{ item }}
+      {% endfor %}
+    state: present
+    create: yes
+    unsafe_writes: yes
+    marker: "# Ansible inventory hosts"
+  tags: hosts
+  
+
+- name: stop and disable firewalld
+  service: name=firewalld enabled=false state=stopped
+  tags: iptables
+
+- name: stop selinux
+  shell: "setenforce 0"
+  failed_when: false
+
+- name: disable selinux
+  lineinfile:
+    dest: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX=disabled"
+
+- name: stop swap
+  shell: "swapoff -a && sed -i '/swap/s/^\\(.*\\)$/#\\1/g' /etc/fstab"
+  tags: swapoff
+
+- name: copy files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: "CentOS-Base.repo", dest: "/etc/yum.repos.d" }
+    - { src: "epel.repo", dest: "/etc/yum.repos.d" }
+
+- name: set limit args
+  pam_limits:
+    dest: "/etc/security/limits.conf"
+    domain: '{{ item.limit_domain }}'
+    limit_type: "{{ item.limit_type }}"
+    limit_item: "{{ item.limit_item }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { limit_domain: 'elasticsearch',limit_type: 'soft',limit_item: 'nofile', value: '65536' }
+    - { limit_domain: 'elasticsearch',limit_type: 'hard',limit_item: 'nofile', value: '65536' }
+  tags: limits
+
+- name: set system args
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    ignoreerrors: yes
+    reload: yes
+  with_items:
+    - {name: 'vm.max_map_count', value: '655360' }
+  tags: sysctl
+
+
+- name: install software
+  yum: 
+    name:
+      - sshpass
+      - expect 
+    state: installed 
+    disable_gpg_check: yes
+  ignore_errors: true

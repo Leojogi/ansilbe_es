@@ -1,0 +1,33 @@
+- name: copy package
+  copy:
+    src: /root/ansible/roles/install_es_cluster/files/{{ rpm }}
+    dest: /root/
+    owner: root
+    group: root
+    mode: 755
+
+- name: install rpm package
+  shell: "rpm -ivh '{{ rpm }}'"
+
+- name: modify jvm memory config
+  template:
+    src: "jvm.options.j2"
+    dest: "/etc/elasticsearch/jvm.options"
+    owner: "root"
+    group: "elasticsearch"
+    mode: "0660"
+    force: yes
+    backup: yes
+  tags: jvm
+
+- name: modify config file
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: "root"
+    group: "elasticsearch"
+    mode: "0660"
+    force: yes
+    backup: yes
+  tags: conf
+

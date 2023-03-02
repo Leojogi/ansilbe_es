@@ -1,0 +1,13 @@
+---
+ssl_dir: "/root/ansible/roles/install_es_cluster/files"
+version: "7.6.0"
+
+es_cluster_name: es
+es_use_g1gc: true
+es_tls: true
+rpm: elasticsearch-7.7.1-x86_64.rpm
+http_port: 9200
+
+es_data_dir: "/var/lib/elasticsearch"
+es_log_dir: "/var/log/elasticsearch"
+es_action_auto_create_index: true
